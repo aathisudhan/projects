@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillForGood - Login/Register</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #007BFF;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      z-index: -1;
+    }
+
+    .form-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 1);
+      border-radius: 12px;
+      padding: 30px 40px;
+      color: #fff;
+      min-width: 300px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.6rem;
+      color: #007BFF;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      background-color: rgba(0, 123, 255, 0.2);
+      color: rgba(0, 0, 0, 0.9);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .form-container input::placeholder {
+      color: rgba(0, 0, 0, 0.3);
+    }
+
+    .form-container input:focus {
+      background-color: rgba(0, 123, 255, 0.3);
+      border: 1px solid #007BFF;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007BFF;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .form-container .switch {
+      color: #000000;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .form-container .switch a {
+      color: #007BFF;
+      font-weight: bold;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+
+  <!-- Firebase SDK v12 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBmsQR4K7z50ViVnkodSp0Dgzu_Lz1zD7s",
+      authDomain: "skillforgood-as.firebaseapp.com",
+      projectId: "skillforgood-as",
+      storageBucket: "skillforgood-as.appspot.com",
+      messagingSenderId: "794871452629",
+      appId: "1:794871452629:web:4a421ca4cdd5a7ec32a35c",
+      measurementId: "G-7H7LM02D54"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.toggleForms = function () {
+      const login = document.getElementById('loginForm');
+      const register = document.getElementById('registerForm');
+      login.classList.toggle('hidden');
+      register.classList.toggle('hidden');
+    }
+
+    window.login = function () {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Login successful!");
+          window.location.href = "home.html";
+        })
+        .catch(error => {
+          alert("Login failed: " + error.message);
+        });
+    }
+
+    window.register = function () {
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          return updateProfile(userCredential.user, { displayName: name });
+        })
+        .then(() => {
+          alert("Registration successful!");
+          window.location.href = "home.html";
+        })
+        .catch(error => {
+          alert("Registration failed: " + error.message);
+        });
+    }
+  </script>
+</head>
+
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="form-container" id="loginForm">
+    <h2>SkillForGood Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <div class="switch">
+      Don't have an account? <a onclick="toggleForms()">Register Now</a>
+    </div>
+  </div>
+
+  <div class="form-container hidden" id="registerForm">
+    <h2>SkillForGood Registration</h2>
+    <input type="text" id="registerName" placeholder="Full Name" required>
+    <input type="email" id="registerEmail" placeholder="Email" required>
+    <input type="password" id="registerPassword" placeholder="Password" required>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+    <button onclick="register()">Register</button>
+    <div class="switch">
+      Have an account? <a onclick="toggleForms()">Login Now</a>
+    </div>
+  </div>
+
+  <script>
+    // Background Animation
+    const canvas = document.getElementById("bg-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let nodes = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createNodes(count) {
+      nodes = [];
+      for (let i = 0; i < count; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < nodes.length; i++) {
+        let a = nodes[i];
+
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, 3, 0, Math.PI * 2);
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          let b = nodes[j];
+          let dx = a.x - b.x;
+          let dy = a.y - b.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 180) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.shadowColor = "rgba(255, 255, 255, 0.8)";
+            ctx.shadowBlur = 10;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+          }
+        }
+
+        a.x += a.vx;
+        a.y += a.vy;
+
+        if (a.x < 0 || a.x > canvas.width) a.vx *= -1;
+        if (a.y < 0 || a.y > canvas.height) a.vy *= -1;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      createNodes(40);
+    });
+
+    resizeCanvas();
+    createNodes(50);
+    draw();
+  </script>
+</body>
+</html>
