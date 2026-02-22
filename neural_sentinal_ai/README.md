@@ -1,6 +1,6 @@
 <div align="center">
 
-<font size="10">NEURAL SENTINEL // AI</font> **[LIVE PROJECT](https://aathisudhan-neural-sentinel-ai.hf.space/)**
+<font size="10">[NEURAL SENTINEL // AI](https://aathisudhan-neural-sentinel-ai.hf.space/)</font>
 ### <font size="6" color="#00f2ff">**[ SENTIMENT_ANALYSIS_CORE ]**</font>
 **DEVELOPED BY: [AATHISUDHAN](https://github.com/aathisudhan)**
 
