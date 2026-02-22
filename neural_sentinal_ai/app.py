@@ -79,7 +79,7 @@ apply_cyber_theme()
 @st.cache_resource
 def load_engine():
     device = 0 if torch.cuda.is_available() else -1
-    return pipeline("", model="", device=device)
+    return pipeline("sentiment-analysis", model="", device=device)
 
 engine = load_engine()
 
