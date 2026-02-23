@@ -13,10 +13,6 @@ def apply_cyber_theme():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
         
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
-        
         /* Main Background and Font */
         .stApp {
             background: radial-gradient(circle at top, #0a192f 0%, #02060c 100%);
